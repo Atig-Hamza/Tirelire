@@ -25,7 +25,6 @@ const configureApp = () => {
         });
     });
 
-    // 404 handler - must be last
     app.use((req, res) => {
         res.status(404).json({
             message: `Route ${req.originalUrl} not found`
