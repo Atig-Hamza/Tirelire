@@ -2,27 +2,33 @@ require('dotenv').config();
 const connectDB = require('./config/database');
 const configureApp = require('./config/appConfig');
 
-const authRoutes = require('./src/routes/authRoutes');
-const groupRoutes = require('./src/routes/groupRoutes');
-const paymentRoutes = require('./src/routes/paymentRoutes');
-const kycRoutes = require('./src/routes/kycRoutes');
-const messageRoutes = require('./src/routes/messageRoutes');
-const { globalErrorHandler } = require('./src/middleware/errorHandler');
+const authRoutes = require('./routes/authRoutes');
+const groupRoutes = require('./routes/groupRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
+const kycRoutes = require('./routes/kycRoutes');
+const messageRoutes = require('./routes/messageRoutes');
+const errorHandler = require('./middleware/errorHandler');
 
 connectDB();
 
 const app = configureApp();
 const PORT = process.env.PORT || 5000;
 
-
+// Register routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/groups', groupRoutes);
 app.use('/api/v1/payments', paymentRoutes);
 app.use('/api/v1/kyc', kycRoutes);
 app.use('/api/v1/messages', messageRoutes);
 
-app.use(globalErrorHandler);
+app.use((req, res) => {
+    res.status(404).json({
+        message: `Route ${req.originalUrl} not found`
+    });
+});
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`)
+    console.log(`🚀 Server running on port http://localhost:${PORT}`);
 });
