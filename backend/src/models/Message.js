@@ -5,7 +5,7 @@ const messageSchema = new mongoose.Schema(
         sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
         group: { type: mongoose.Schema.Types.ObjectId, ref: 'Group' },
         content: { type: String, required: true },
-        attachments: [{ type: String }], // optional files or images
+        attachments: [{ type: String }],
         isRead: { type: Boolean, default: false },
     },
     { timestamps: true }
