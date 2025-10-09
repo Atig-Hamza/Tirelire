@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
     try {
-        const { username, email, password, role } = req.body;
+        const { username, email, password } = req.body;
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -17,9 +17,6 @@ exports.register = async (req, res) => {
             username,
             email,
             password: hashedPassword,
-            role: role || 'user',
-            avatar: avatar || '',
-            bio: bio || '',
         });
 
         res.status(201).json({ message: 'User registered successfully', user });
@@ -63,13 +60,29 @@ exports.getProfile = async (req, res) => {
     }
 };
 
+exports.getUserInfo = async (req, res) => {
+    try {
+        const user = await User.findById(
+            req.user.id,
+        )
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ user });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+}
+
 exports.updateProfile = async (req, res) => {
     try {
-        const { username, avatar, bio, isActive } = req.body;
+        const { username, avatar, bio } = req.body;
 
         const user = await User.findByIdAndUpdate(
             req.user.id,
-            { username, avatar, bio, isActive },
+            { username, avatar, bio },
             { new: true, runValidators: true }
         );
 
